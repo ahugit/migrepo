@@ -2,7 +2,7 @@
 !#mpif90 -O3 -fPIC -unroll -ip -axavx -xsse4.2 -openmp -vec-report -par-report -openmp-report -o train.x program.f90
 !mpif90 -O3 -fPIC -unroll -ip -axavx -xsse4.2 -openmp -vec -par -openmp -o train.x program.f90
 !#mpif90 train.x program.f90
-	
+	trying it
 program main 
 	use params !, only: myid,iter,parname,npars,stepmin
 	use objf
