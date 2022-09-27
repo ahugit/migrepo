@@ -16,7 +16,7 @@
 logical, parameter :: groups=.true.,onlysingles=.false.,onlymales=.false.,onlyfem=.false.,optimize=.false.,chkstep=.false.,condmomcompare=.false.,comparepars=.false.,extramoments=.true. !ahu030622
 logical :: nonneg
     logical, parameter :: onthejobsearch=.TRUE. !set in m\ain
-	integer(i4b), parameter :: numit=5 !ahumarch1122
+	integer(i4b), parameter :: numit=3 !ahumarch1122
     real(dp), dimension(2) :: nonlabinc !=(/ 0.0_dp,0.0_dp /) !(/ 300.0_dp,1100.0_dp /) !ahu summer18 051418: changing it back to parameter and changing dimension to 2 (not educ and educ) !ahu summer18 042318 changing this so it is set at main again
 	real(dp), parameter :: eps = 1.0d-6,zero=0.0_dp,epstest=2.0_dp					! could do tiny(.) but that gives a number that is way too small and therefore not appropriate for those places where we check the inequalities or equalities	
 	real(dp), parameter :: eps2= 1.0d-6
@@ -307,7 +307,7 @@ contains
     sigo_f=realpar(j)                                ; j=j+1
 
     
-    do i=1,ntypp
+    do i=1,ntypp !The below are parameters 70 to 93. So 70-75 is type1, 76-81 is type2, 82-87 is type3, 88-93 is type4.
         if (i==1) then 
             realpar(j)=0.0_dp                           ; parname(j)='ptypehs' ; stepos(j)=0.0_dp
             ptypehs(i)=exp(realpar(j))                  ; indust1(i)=j ; j=j+1
@@ -319,15 +319,15 @@ contains
 	        alf2t(i)=realpar(j)                         ; j=j+1
             !realpar(j)= -1.0_dp*mult1c * logit(par(j))   ; parname(j)='cst'       ; stepos(j)=0.5_dp
             !cst(i)=realpar(j)                           ; j=j+1 
-            realpar(j)= par(j)   ; parname(j)='cst'       ; stepos(j)=1.5_dp*par(j) !not iterating on this anymore. see notes. under cost vs. sigo. they are just not sep ident I think. 
+            realpar(j)= 0.0_dp                          ; parname(j)='cst'       ; stepos(j)=0.0_dp*par(j) !not iterating on this anymore. see notes. under cost vs. sigo. they are just not sep ident I think. 
             cst(i)=realpar(j)                           ; j=j+1 
             !ahu082822 august2022 print*, 'mumar(1)',j,par(j),multmar, min2pls(par(j)),multmar*min2pls(par(j))
-            realpar(j)=multmar * min2pls(par(j))          ; parname(j)='mu_mar'     ; stepos(j)=-0.5_dp    ; if (onlysingles) stepos(j)=0.0_dp 	    
+            realpar(j)=multmar * min2pls(par(j))          ; parname(j)='mu_mar'     ; stepos(j)=1.5_dp*par(j)    ; if (onlysingles) stepos(j)=0.0_dp 	    
             mu_mar(i)=realpar(j)                        ; j=j+1      
         else
-            realpar(j)=0.0_dp                            ; parname(j)='ptypehs' ; stepos(j)=0.0_dp
+            realpar(j)=par(j)                            ; parname(j)='ptypehs' ; stepos(j)=1.5_dp*par(j)
             ptypehs(i)=exp(realpar(j))                  ; indust1(i)=j ; j=j+1
-            realpar(j)=0.0_dp                            ; parname(j)='ptypecol'  ; stepos(j)=0.0_dp
+            realpar(j)=par(j)                            ; parname(j)='ptypecol'  ; stepos(j)=1.5_dp*par(j)
             ptypecol(i)=exp(realpar(j))                 ; indust2(i)=j ; j=j+1
             realpar(j)=par(j)                           ; parname(j)='alf1t'     ; stepos(j)=0.2_dp  ; if (onlyfem) stepos(j)=0.0_dp
             alf1t(i)=realpar(j)                         ; j=j+1
@@ -335,7 +335,7 @@ contains
 	        alf2t(i)=realpar(j)                         ; j=j+1
             realpar(j)= par(j)                          ; parname(j)='cst'       ; stepos(j)=1.5_dp*par(j)
             cst(i)=realpar(j)                           ; j=j+1 
-            realpar(j)=mu_mar(1)                        ; parname(j)='mu_mar'     ; stepos(j)=0.0_dp    ; if (onlysingles) stepos(j)=0.0_dp 	    
+            realpar(j)=multmar * min2pls(par(j))                         ; parname(j)='mu_mar'     ; stepos(j)=1.5_dp*par(j)    ; if (onlysingles) stepos(j)=0.0_dp 	    
             mu_mar(i)=realpar(j)                        ; j=j+1      
         end if 
     	!print*, 'Here is cost',cst(i),par(j-1),realpar(j-1)
